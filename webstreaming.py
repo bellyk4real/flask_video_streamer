@@ -25,3 +25,8 @@ app = Flask(__name__)
 #vs = VideoStream(usePiCamera=1).start()
 vs = VideoStream(src=0).start()
 time.sleep(2.0)
+
+@app.route("/")
+def index():
+	# return the rendered template
+	return render_template("index.html")
