@@ -39,3 +39,19 @@ class SingleMotionDetector:
 		cnts = imutils.grab_contours(cnts)
 		(minX, minY) = (np.inf, np.inf)
 		(maxX, maxY) = (-np.inf, -np.inf)
+
+		# if no contours were found, return None
+		if len(cnts) == 0:
+			return None
+ 
+		# otherwise, loop over the contours
+		for c in cnts:
+			# compute the bounding box of the contour and use it to
+			# update the minimum and maximum bounding box regions
+			(x, y, w, h) = cv2.boundingRect(c)
+			(minX, minY) = (min(minX, x), min(minY, y))
+			(maxX, maxY) = (max(maxX, x + w), max(maxY, y + h))
+ 
+		# otherwise, return a tuple of the thresholded image along
+		# with bounding box
+		return (thresh, (minX, minY, maxX, maxY))
