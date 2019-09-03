@@ -111,3 +111,28 @@ def video_feed():
 	# type (mime type)
 	return Response(generate(),
 		mimetype = "multipart/x-mixed-replace; boundary=frame")
+
+# check to see if this is the main thread of execution
+if __name__ == '__main__':
+	# construct the argument parser and parse command line arguments
+	ap = argparse.ArgumentParser()
+	ap.add_argument("-i", "--ip", type=str, required=True,
+		help="ip address of the device")
+	ap.add_argument("-o", "--port", type=int, required=True,
+		help="ephemeral port number of the server (1024 to 65535)")
+	ap.add_argument("-f", "--frame-count", type=int, default=32,
+		help="# of frames used to construct the background model")
+	args = vars(ap.parse_args())
+ 
+	# start a thread that will perform motion detection
+	t = threading.Thread(target=detect_motion, args=(
+		args["frame_count"],))
+	t.daemon = True
+	t.start()
+ 
+	# start the flask app
+	app.run(host=args["ip"], port=args["port"], debug=True,
+		threaded=True, use_reloader=False)
+ 
+# release the video stream pointer
+vs.stop()
