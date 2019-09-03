@@ -30,3 +30,13 @@ time.sleep(2.0)
 def index():
 	# return the rendered template
 	return render_template("index.html")
+
+def detect_motion(frameCount):
+	# grab global references to the video stream, output frame, and
+	# lock variables
+	global vs, outputFrame, lock
+ 
+	# initialize the motion detector and the total number of frames
+	# read thus far
+	md = SingleMotionDetector(accumWeight=0.1)
+	total = 0
